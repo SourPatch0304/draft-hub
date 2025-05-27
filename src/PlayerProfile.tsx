@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import rawData from './data/intern_project_data.json';
 import {
   Box,
@@ -17,7 +17,6 @@ import {
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import type { Bio, Measurement, ScoutRanking, GameLog, Player } from './types/player';
 import PlayerCard from './PlayerCard';
-import { getAverageRank } from './PlayerCard';
 
 interface PlayerProfileProps {
   playerId: number;
@@ -77,12 +76,23 @@ export default function PlayerProfile({ playerId }: PlayerProfileProps) {
 
   // Fetch measurement and logs
   const measurement = rawData.measurements.find((m: Measurement) => m.playerId === playerId);
-  const scoutRanking = rawData.scoutRankings.find((s: ScoutRanking) => s.playerId === playerId);
+  const scoutRankingRaw = rawData.scoutRankings.find((s: any) => s.playerId === playerId);
+  // Sanitize nulls to undefined for compatibility with ScoutRanking type
+  const scoutRanking: ScoutRanking | undefined = scoutRankingRaw
+    ? {
+        ...scoutRankingRaw,
+        ["ESPN Rank"]: scoutRankingRaw["ESPN Rank"] ?? undefined,
+        ["Sam Vecenie Rank"]: scoutRankingRaw["Sam Vecenie Rank"] ?? undefined,
+        ["Kevin O'Connor Rank"]: scoutRankingRaw["Kevin O'Connor Rank"] ?? undefined,
+        ["Kyle Boone Rank"]: scoutRankingRaw["Kyle Boone Rank"] ?? undefined,
+        ["Gary Parrish Rank"]: scoutRankingRaw["Gary Parrish Rank"] ?? undefined,
+      }
+    : undefined;
   const gameLogs: GameLog[] = rawData.game_logs.filter(g => g.playerId === playerId);
 
   // Unified player
   const player: Player = { playerId: bio.playerId, bio, measurement, scoutRanking: scoutRanking || undefined, gameLogs };
-  const avgRank = player.scoutRanking ? getAverageRank(player.scoutRanking) : null;
+  //const avgRank = player.scoutRanking ? getAverageRank(player.scoutRanking) : null;
 
   // Compute aggregates
   const totals = {

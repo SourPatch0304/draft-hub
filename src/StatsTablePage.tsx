@@ -26,8 +26,8 @@ const STATIC_COLUMNS: GridColDef[] = [
     flex: 1,
     minWidth: 100,
     type: 'number',
-    renderCell: (params: GridRenderCellParams<number | null>) => {
-      const value = params.value;
+    renderCell: (params: GridRenderCellParams) => {
+      const value = params.value as number | null;
       if (value == null) return <Box sx={{ textAlign: 'center', width: '100%' }}>–</Box>;
       const min = 1, max = 50;
       const ratio = Math.max(0, Math.min(1, (value - min) / (max - min)));
@@ -119,14 +119,14 @@ export default function StatsTablePage() {
 
   // Build all columns
   const ALL_COLUMNS: GridColDef[] = useMemo(() => {
-    const scoutCols = allScoutFields.map(name => ({
+    const scoutCols: GridColDef[] = allScoutFields.map(name => ({
       field: name,
       headerName: name,
       flex: 1,
       minWidth: 100,
-      type: 'number',
-      renderCell: (params: GridRenderCellParams<number | null>) => {
-        const value = params.value;
+      type: 'number' as const,
+      renderCell: (params: GridRenderCellParams) => {
+        const value = params.value as number | null;
         if (value == null) return <Box sx={{ textAlign: 'center', width: '100%' }}>–</Box>;
         const min = 1, max = 50;
         const ratio = Math.max(0, Math.min(1, (value - min) / (max - min)));

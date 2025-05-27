@@ -1,5 +1,4 @@
 // src/components/NavBar.tsx
-import React from 'react';
 import { AppBar, Toolbar, Tabs, Tab, Typography } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -27,7 +26,7 @@ export default function NavBar() {
           textColor="inherit"
           indicatorColor="secondary"
         >
-          {NAV_ITEMS.map((item, idx) => (
+          {NAV_ITEMS.map((item) => (
             <Tab
               key={item.path}
               label={item.label}
